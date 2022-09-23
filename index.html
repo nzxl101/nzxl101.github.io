@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>nzxl.space</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;700&display=swap');
+            *, html, body {
+                margin: 0;
+                padding: 0;
+                overflow-y: hidden;
+            }
+
+            body {
+                background-color: black;
+                font-family: 'Fredoka', sans-serif;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+
+            /* --------------Player--------------- */
+            #video {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                min-width: 100%; 
+                min-height: 100%;
+                user-select: none;
+                pointer-events: none;
+                opacity: 0.5;
+                z-index: 1;
+            }
+            /* ----------------------------------- */
+
+            /* --------------Text--------------- */
+            h1 {
+                left: 0;
+                line-height: 200px;
+                margin-top: -100px;
+                position: absolute;
+                text-align: center;
+                top: 50%;
+                width: 100%;
+                z-index: 50;
+                color: white;
+                text-shadow: 0px 0px 22px rgba(150, 150, 150, 1);
+                font-size: 64px;
+            }
+
+            a, a:link, a:visited, a:active, a:hover {
+                text-decoration: none;
+                color: #cacaca;
+            }
+
+            p {
+                z-index: 55;
+                background-color: transparent;
+                color: white;
+            }
+            /* --------------------------------- */
+
+            /* --------------Links--------------- */
+            #links {
+                left: 0;
+                line-height: 300px;
+                margin-top: -100px;
+                position: absolute;
+                text-align: center;
+                top: 50%;
+                width: 100%;
+                z-index: 50;
+                color: white;
+                font-size: 18px;
+            }
+
+            li {
+                display: inline;
+            }
+
+            li:after {
+                content: " •";
+                white-space: pre;
+                color: crimson;
+                font-size: 15px;
+            }
+
+            li:last-child:after {
+                content: "";
+            }
+            /* ---------------------------------- */
+
+            /* --------------Loader--------------- */
+            .preloader {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                background-repeat: no-repeat; 
+                background-color: black;
+                background-position: center;
+            }
+            /* ----------------------------------- */
+
+            /* --------------Twitch--------------- */
+            .twitch-embed {
+                max-width: 500px;
+                margin: auto;
+            }
+            /* ----------------------------------- */
+        </style>
+    </head>
+    <body>
+        <div class="preloader"></div>
+        <div id="container">
+            <div id="video"></div>
+            <h1>nzxl.space</h1>
+            <ul id="links">
+                <li><a href="https://discord.gg/vsGcbkYSvv" target="_blank">discord</a></li>
+                <li><a href="https://osu.ppy.sh/u/kiyomii" target="_blank">osu!</a></li>
+                <li><a href="https://twitter.com/kiyuwumii" target="_blank">twitter</a></li>
+                <li><a href="https://www.twitch.tv/kiyowomii" target="_blank">twitch</a></li>
+                <li><a href="https://anilist.co/user/mindiess/" target="_blank">anilist</a></li>
+            </ul>
+            <!-- <div id="twitch-embed"></div> -->
+        </div>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+        <script src="https://bundle.run/yt-player@3.5.0"></script>
+        <script src="https://player.twitch.tv/js/embed/v1.js"></script>
+        <script>
+            var player = new ytPlayer("#video", { width: "100%", height: "100%", autoplay: true, caption: false, controls: false, keyboard: false, fullscreen: false, annotations: false, modestBranding: true, related: false, showInfo: false });
+            player.mute();
+
+            var videos = ["DBXTRtm07RA", "MwxgUVrj5m4"];
+            var video = videos[Math.floor(Math.random()*videos.length)];
+            var bool = true;
+            console.log("Initializing video player..");
+
+            // Set volume and mute - otherwise player won't autoplay. lmao thanks google you assholes
+            player.mute();
+            player.setVolume(10);
+
+            // Load video and play
+            player.load(video, true, 0);
+            player.play();
+
+            // Add events after a bit because guess what, google will just block them
+            setTimeout(() => {
+                console.log("Events set");
+
+                player.on("unstarted", () => { 
+                    player.play();
+                    console.log("Player unstarted.. trying to play");
+                });
+                
+                player.on("ended", () => { 
+                    player.load(video, true, 0);
+                    player.play();
+                    console.log("Video ended.. trying to reload video");
+                });
+
+                document.body.addEventListener("click", () => {
+                    if(bool) player.unMute();
+                    else player.mute();
+
+                    bool = !bool;
+                    
+                    console.log("User unmuted video");
+                });
+            }, 2*1000);
+        </script>
+        <script>
+            $(window).on('load', function(){
+                $('.preloader').fadeOut('slow');
+            });
+
+            var pp = new Twitch.Player("twitch-embed", {
+                channel: "FreshBoba1",
+                width: 500
+            });
+            pp.setVolume(0.1);
+
+            document.getElementById("twitch-embed").style.maxWidth = "500px";
+            document.getElementById("twitch-embed").style.margin = "auto";
+        </script>
+    </body>
+</html>
